@@ -7,13 +7,7 @@ public class Board {
     // Position de asam :
     private int xpos;
     private int ypos;
-    /* Affichage de asam :
-    Dans l'ordre :
-    0-3 : asam n'est pas sur un tapis orientation haut, gauche, bas, droite
-    4-7 : asam est sur un tapis noir idem pour l'orientation
-    8-11 : asam est sur un tapis blanc idem pour l'orientation
-     */
-    private static String[] asamDisplay = {"\u1431", "\u1433", "\u142F", "\u1438", "\u15D7 ", "\u15D8", "\u15D6", "\u15DB", "\u15CB", "\u15CC", "\u15CA", "\u15CF"};
+
     /**
      *     0
      *     |
@@ -22,8 +16,6 @@ public class Board {
      *     2
      */
     private int orientation;
-    // Etat du plateau dans la console :
-    private String display;
 
     public Board(int dimension) {
         this.dimension = dimension;
@@ -43,33 +35,20 @@ public class Board {
         return orientation;
     }
 
-    public String getDisplay(){
-        return display;
+    public int getDimension() {
+        return dimension;
     }
 
-    // Mets à jour l'état du plateau pour la console
-    public void maj(){
-        display = "";
-        for(int i = 0; i<dimension; i++){
-            for(int j = 0; j<dimension; j++){
-                if(surAsam(i,j)){
-                    display += asamDisplay[choixAsam()];
-                } else {
-                    if(this.board[i][j] == null){
-                        display += "  ";
-                    } else {
-                        display += this.board[i][j].getColor();
-                    }
-                }
-            }
-            display += "\n";
-        }
+    public Joueur getCase(int xpos, int ypos) {
+        return this.board[xpos][ypos];
     }
 
-    public boolean surAsam(int x, int y){
+    // retourne vrai si la position en paramètre est celle d'asam
+    public boolean estSousAsam(int x, int y){
         return (x == xpos && y == ypos);
     }
 
+    //TODO a refaire
     public int choixAsam(){
         if(board[xpos][ypos] == null){
             // Asam n'est pas sur un tapis
