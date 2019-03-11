@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Joueur {
 
     private int nbTapisRestants;
@@ -37,5 +39,21 @@ public class Joueur {
     public void payerJoueur(int argent, Joueur joueur) {
         this.argent -= argent;
         joueur.setArgent(argent);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Joueur)) return false;
+        Joueur joueur = (Joueur) o;
+        return getNbTapisRestants() == joueur.getNbTapisRestants() &&
+                getArgent() == joueur.getArgent() &&
+                Objects.equals(getPseudo(), joueur.getPseudo()) &&
+                Objects.equals(getColor(), joueur.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNbTapisRestants(), getPseudo(), getArgent(), getColor());
     }
 }

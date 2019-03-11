@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void jouer(Board b) {
+    public static void jouer(Board board) {
         Scanner sc = new Scanner(System.in);
         //0: gauche, 1: devant, 2: droite
         System.out.println("Entrez la direction (0: devant, 1:droite, 3:gauche) :");
@@ -10,10 +10,9 @@ public class Main {
         System.out.println("Vous avez choisi : " + str);
         int nbCases = ((int)(Math.random()*4))+1; // Random roll
         System.out.println("Vous vous déplacez de " + nbCases + "cases");
-        int newOrientation = b.getOrientation() + Integer.parseInt(str);
-        b.bougeVendeur(nbCases, newOrientation);
-        b.maj();
-        System.out.println(b.getDisplay());
+        int newOrientation = board.getOrientation() + Integer.parseInt(str);
+        board.bougeVendeur(nbCases, newOrientation);
+        System.out.println(Display.afficheBoard(board));
     }
 
     public static void main(String[] args) {
@@ -21,21 +20,25 @@ public class Main {
        Joueur black = new Joueur("Human", "x ");
        Joueur white = new Joueur("AI", "o ");
 
-       Board b = new Board(7);
-       b.maj();
-       System.out.println(b.getDisplay());
+       Board board = new Board(7);
+       System.out.println(Display.afficheBoard(board));
 
        while(black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0){
-           jouer(b);
+           jouer(board);
        }
-
-
-        /* Main plateau = new Main();
-        plateau.afficher();
-        plateau.jouer();
-       for(int i = 0; i<100; i++){
-           System.out.println((int)(Math.random()*4));
-       }*/
 
     }
 }
+
+//TODO :
+/*
+- tapis sur deux cases
+- comptage tapis adjacents
+- affichage
+- tests unitaire
+- stream java
+- IA
+
+1er milestone :
+    - avoir une version en random qui marche
+ */
