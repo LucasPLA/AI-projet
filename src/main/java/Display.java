@@ -17,13 +17,13 @@ Dans l'ordre :
         String display = "";
         for(int i = 0; i<board.getDimension(); i++){
             for(int j = 0; j<board.getDimension(); j++){
-                if(board.isAsam(i,j)){
+                if(board.isAsam(j,i)){
                     display += asamDisplay[board.choixAsam()];
                 } else {
-                    if(board.getCase(i,j) == null){
+                    if(board.getCase(j,i) == null){
                         display += "  ";
                     } else {
-                        display += board.getCase(i,j).getPossesseur().getColor();
+                        display += board.getCase(j,i).getPossesseur().getColor();
                     }
                 }
             }

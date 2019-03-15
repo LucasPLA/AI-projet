@@ -122,7 +122,10 @@ public class Board {
         }
 
         // paye le joueur possesseur du tapis sur lequel on finit
-        if(!this.board[this.xpos][this.ypos].getPossesseur().equals(joueurActif)) joueurActif.payerJoueur(this.nbTapisAdjacents(), this.board[this.xpos][this.ypos].getPossesseur());
+        if (this.board[this.xpos][this.ypos] != null) {
+            if (!this.board[this.xpos][this.ypos].getPossesseur().equals(joueurActif))
+                joueurActif.payerJoueur(this.nbTapisAdjacents(), this.board[this.xpos][this.ypos].getPossesseur());
+        }
     }
 
     public int nbTapisAdjacents() {
@@ -179,48 +182,36 @@ public class Board {
     // En partant du principe que dimension est impaire...
     public int[] gererDebordement(int x, int y){
         // Depassement en abscisse
-        if(x<0 || x>(dimension - 1)){
-            // Negatif
-            if(x<0){
-                if(y== (dimension - 1)){
-                    y = dimension + x;
+        if(x<0 || x>(this.dimension - 1)) {
+
+            this.orientation = 2 - this.orientation;
+            int parité = (y % 2 == 0) ? -1 : 1;
+
+            if (x < 0 && y > 0) {
+                y = y + parité;
+                x = -x - 1;
+            }
+            else if ((x > this.dimension - 1) && (y < this.dimension - 1)) {
+                y = y + parité;
+                x = (this.dimension - 1) - (x - this.dimension);
+            }
+            else { //situation où l'on est dans un coin
+                this.orientation = 4 - this.orientation;
+                if(y < 0) {
+                    y = -x - 1;
                     x = 0;
                 } else {
-                    x = -x - 1;
-                    y = y - (((y % 2) * 2) - 1);
-                }
-            // Positif
-            } else {
-                if(y == 0){
-                    y = x - dimension;
-                    x = dimension - 1;
-                } else {
-                    x = dimension - 1 - (x - dimension);
-                    y = y + (((y % 2) * 2) - 1);
+                    y = (this.dimension - 1) - (x - this.dimension);
+                    x = (this.dimension - 1);
                 }
             }
-        // Depassement en ordonnée
         } else {
-            // Negatif
-            if(y<0){
-                if(x == (dimension - 1)){
-                    x = dimension + y;
-                    y = 0;
-                }
-                else {
-                    x = x - (((x % 2) * 2) - 1);
-                    y = -y - 1;
-                }
-            // Positif
-            } else {
-                if(x == 0) {
-                    x = y - dimension;
-                    y = dimension - 1;
-                } else {
-                    x = x + (((x % 2) * 2) - 1);
-                    y = dimension - 1 - (y - dimension);
-                }
-            }
+            int[] temp = this.gererDebordement(y, x);
+
+            x = temp[1];
+            y = temp[0];
+            this.orientation = 3 - this.orientation;
+
         }
         int[] res = {x, y};
         return res;
