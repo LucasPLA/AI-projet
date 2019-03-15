@@ -66,7 +66,7 @@ public class Board {
         }
     }
 
-    public void poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) {
+    public Tapis[][] poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) {
         // verifie les deux moitiés sont bien adjacente et valides
         if(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2)) {
             throw new RuntimeException();
@@ -100,6 +100,8 @@ public class Board {
         this.board[xpos2][ypos2] = new Tapis(joueur, xpos1, ypos1);
 
         joueur.decrementTapis();
+
+        return this.board;
     }
 
     public void bougeVendeur(int longueur, int newOrientation, Joueur joueurActif) {

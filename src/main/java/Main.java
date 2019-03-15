@@ -11,7 +11,7 @@ public class Main {
         int nbCases = ((int)(Math.random()*4))+1; // Random roll
         System.out.println("Vous vous déplacez de " + nbCases + "cases");
         int newOrientation = board.getOrientation() + Integer.parseInt(str);
-        board.bougeVendeur(nbCases, newOrientation);
+        //board.bougeVendeur(nbCases, newOrientation);
         System.out.println(Display.afficheBoard(board));
     }
 
