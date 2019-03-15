@@ -102,7 +102,7 @@ public class Board {
         joueur.decrementTapis();
     }
 
-    public void bougeVendeur(int longueur, int newOrientation) {
+    public void bougeVendeur(int longueur, int newOrientation, Joueur joueurActif) {
         int newXpos = this.xpos;
         int newYpos = this.ypos;
 
@@ -121,7 +121,8 @@ public class Board {
             ypos = pos[1];
         }
 
-        //TODO : faire la transaction
+        // paye le joueur possesseur du tapis sur lequel on finit
+        if(!this.board[this.xpos][this.ypos].getPossesseur().equals(joueurActif)) joueurActif.payerJoueur(this.nbTapisAdjacents(), this.board[this.xpos][this.ypos].getPossesseur());
     }
 
     public int nbTapisAdjacents() {
@@ -135,9 +136,35 @@ public class Board {
             compteur++;
             tapisVisites.add(tmp);
 
-            //TODO : faire pour les 4 cas
             if(this.estValide(tmp.getX() + 1, tmp.getY()) && (this.board[tmp.getX() + 1][tmp.getY()]) != null) {
                 Tapis tapis = this.board[tmp.getX() + 1][tmp.getY()];
+                if(tapisVisites.contains(tapis)) {
+                    if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
+                        tapisAVisiter.addFirst(tapis);
+                    }
+                }
+            }
+
+            if(this.estValide(tmp.getX() - 1, tmp.getY()) && (this.board[tmp.getX() - 1][tmp.getY()]) != null) {
+                Tapis tapis = this.board[tmp.getX() - 1][tmp.getY()];
+                if(tapisVisites.contains(tapis)) {
+                    if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
+                        tapisAVisiter.addFirst(tapis);
+                    }
+                }
+            }
+
+            if(this.estValide(tmp.getX(), tmp.getY() - 1) && (this.board[tmp.getX()][tmp.getY() - 1]) != null) {
+                Tapis tapis = this.board[tmp.getX()][tmp.getY() - 1];
+                if(tapisVisites.contains(tapis)) {
+                    if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
+                        tapisAVisiter.addFirst(tapis);
+                    }
+                }
+            }
+
+            if(this.estValide(tmp.getX(), tmp.getY() + 1) && (this.board[tmp.getX()][tmp.getY() + 1]) != null) {
+                Tapis tapis = this.board[tmp.getX()][tmp.getY() + 1];
                 if(tapisVisites.contains(tapis)) {
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
                         tapisAVisiter.addFirst(tapis);
