@@ -44,6 +44,12 @@ public class Board {
         return dimension;
     }
 
+    // Pose un tapis sur la case (x,y) (pour les tests)
+    public void setBoard(Tapis tapis, int x, int y) { this.board[x][y] = tapis; }
+
+    // Pose Asam a la position voulue
+    public void setAsam(int x, int y) {xpos=x; ypos=y;}
+
     public Tapis getCase(int xpos, int ypos) {
         return this.board[xpos][ypos];
     }
@@ -68,7 +74,7 @@ public class Board {
 
     public Tapis[][] poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) {
         // verifie les deux moitiés sont bien adjacente et valides
-        if(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2)) {
+        if(!(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2))) {
             throw new RuntimeException();
         }
 
@@ -78,7 +84,7 @@ public class Board {
         }
 
         // vérifie que tu ne recouvre pas un tapis complet
-        if((this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
+        if((this.board[xpos1][ypos1] != null) && (this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
             throw new RuntimeException();
         }
 
