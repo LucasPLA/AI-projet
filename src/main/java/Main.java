@@ -9,9 +9,24 @@ public class Main {
         System.out.println("Le vendeur se déplacera de "+nbCases+". Entrez la direction (0: devant, 1:droite, 3:gauche) :");
         String str = sc.nextLine();
 
-        int newOrientation = board.getOrientation() + Integer.parseInt(str);
+        int newOrientation = (board.getOrientation() + Integer.parseInt(str)) % 4;
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
-        System.out.println(Display.afficheBoard(board));
+        Display.afficheBoard(board);
+    }
+
+    public static void poseTapis(Board board, Joueur joueurActif) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("xtapis1 ?");
+        int x1 = Integer.parseInt(sc.nextLine());
+        System.out.println("ytapis1 ?");
+        int y1 = Integer.parseInt(sc.nextLine());
+        System.out.println("xtapis2 ?");
+        int x2 = Integer.parseInt(sc.nextLine());
+        System.out.println("xtapis2 ?");
+        int y2 = Integer.parseInt(sc.nextLine());
+
+        board.poseTapis(joueurActif, x1, y1, x2, y2);
+        Display.afficheBoard(board);
     }
 
     public static void main(String[] args) {
@@ -21,11 +36,11 @@ public class Main {
        Joueur joueurActif = white;
 
        Board board = new Board(7);
-       System.out.println(Display.afficheBoard(board));
+       Display.afficheBoard(board);
 
        while(black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0){
            jouerCoup(board, joueurActif);
-           // todo pose tapis
+           poseTapis(board, joueurActif);
            joueurActif = (joueurActif == white) ? black : white;
        }
 

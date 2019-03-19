@@ -44,6 +44,9 @@ public class Board {
         return dimension;
     }
 
+    // Pose Asam a la position voulue
+    public void setAsam(int x, int y) {xpos=x; ypos=y;}
+
     public Tapis getCase(int xpos, int ypos) {
         return this.board[xpos][ypos];
     }
@@ -52,23 +55,14 @@ public class Board {
         return (x == xpos && y == ypos);
     }
 
-    //TODO : revoir
-    public int choixAsam(){
-        if(board[xpos][ypos] == null){
-            // Asam n'est pas sur un tapis
-            return orientation;
-        } else if(board[xpos][ypos].getPossesseur().getColor() == "x "){
-            // Asam est sur un tapis noir
-            return 4 + orientation;
-        } else {
-            // Asam est sur un tapis blanc
-            return 8 + orientation;
-        }
+    public int[] getAsam() {
+        int[] res = {this.xpos, this.ypos};
+        return res;
     }
 
-    public void poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) {
+    public Tapis[][] poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) { // todo verifier que l'on pas poser sous asam
         // verifie les deux moitiés sont bien adjacente et valides
-        if(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2)) {
+        if(!(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2))) {
             throw new RuntimeException();
         }
 
@@ -78,7 +72,7 @@ public class Board {
         }
 
         // vérifie que tu ne recouvre pas un tapis complet
-        if((this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
+        if((this.board[xpos1][ypos1] != null) && (this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
             throw new RuntimeException();
         }
 
@@ -100,17 +94,25 @@ public class Board {
         this.board[xpos2][ypos2] = new Tapis(joueur, xpos1, ypos1);
 
         joueur.decrementTapis();
+
+        return this.board;
     }
 
     public void bougeVendeur(int longueur, int newOrientation, Joueur joueurActif) {
         int newXpos = this.xpos;
         int newYpos = this.ypos;
 
+        if(newOrientation == 2) {
+            throw new RuntimeException();
+        }
+
         if((newOrientation % 2) == 0) {
             newYpos -= (1-newOrientation) * longueur;
         } else {
             newXpos += (2-newOrientation) * longueur;
         }
+
+        this.orientation = newOrientation;
 
         if(estValide(newXpos, newYpos)){
             xpos = newXpos;
@@ -139,10 +141,13 @@ public class Board {
             compteur++;
             tapisVisites.add(tmp);
 
-            if(this.estValide(tmp.getX() + 1, tmp.getY()) && (this.board[tmp.getX() + 1][tmp.getY()]) != null) {
+            if(this.estValide(tmp.getX() + 1, tmp.getY()) && ((this.board[tmp.getX() + 1][tmp.getY()]) != null)) {
                 Tapis tapis = this.board[tmp.getX() + 1][tmp.getY()];
+                System.out.println("kermit");
                 if(tapisVisites.contains(tapis)) {
+                    System.out.println("fozzy");
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
+                        System.out.println("gonzo");
                         tapisAVisiter.addFirst(tapis);
                     }
                 }
@@ -184,25 +189,27 @@ public class Board {
         // Depassement en abscisse
         if(x<0 || x>(this.dimension - 1)) {
 
-            this.orientation = 2 - this.orientation;
-            int parité = (y % 2 == 0) ? -1 : 1;
+            int parité = (y % 2 == 0) ? 1 : -1;
 
-            if (x < 0 && y > 0) {
+            if (x < 0 && y < (this.dimension - 1)) {
                 y = y + parité;
                 x = -x - 1;
+                this.orientation = 1;
             }
-            else if ((x > this.dimension - 1) && (y < this.dimension - 1)) {
-                y = y + parité;
+            else if ((x > this.dimension - 1) && (y > 0)) {
+                y = y - parité;
                 x = (this.dimension - 1) - (x - this.dimension);
+                this.orientation = 3;
             }
             else { //situation où l'on est dans un coin
-                this.orientation = 4 - this.orientation;
-                if(y < 0) {
-                    y = -x - 1;
-                    x = 0;
-                } else {
-                    y = (this.dimension - 1) - (x - this.dimension);
+                if(y == 0) { //debordement vers le haut
+                    y = x - this.dimension;
                     x = (this.dimension - 1);
+                    this.orientation = 2;
+                } else  if (y == (this.dimension - 1)){ //debordement en bas
+                    y = (this.dimension) + x;
+                    x = 0;
+                    this.orientation = 0;
                 }
             }
         } else {
@@ -212,6 +219,7 @@ public class Board {
             y = temp[0];
             this.orientation = 3 - this.orientation;
 
+
         }
         int[] res = {x, y};
         return res;
@@ -219,7 +227,7 @@ public class Board {
 
     // retourne vrai si la case est bien dans les dimensions du tableau
     public boolean estValide(int x, int y) {
-        return (x>=0 && x<=(dimension-1) && y>=0 && y<=(dimension-1));
+        return ((x>=0 && x<=(dimension-1)) && (y>=0 && y<=(dimension-1)));
     }
 
     //
