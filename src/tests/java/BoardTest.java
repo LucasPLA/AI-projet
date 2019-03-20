@@ -111,44 +111,20 @@ class BoardTest {
         assertEquals(tapis[2][2].getPossesseur(), black);
     }
 
-    // Tests pour le compte du nombre de tapis adjacent
-
     @Test
     void testNbTapisAdjacent() {
-          /* Initialisation du tapis :
-        . . . . . . .
-        . . . o . . .
-        . x x o o x .
-        . . x x o x .
-        . . . x . . .
-        . . . . x x .
-        . . . . . . .
-         */
 
-        /* board1.setBoard(new Tapis(black, 2, 2), 1, 2);
-        board1.setBoard(new Tapis(black, 1, 2), 2, 2);
-        board1.setBoard(new Tapis(black, 3, 3), 2, 3);
-        board1.setBoard(new Tapis(black, 2, 3), 3, 3);
-        board1.setBoard(new Tapis(black, 3, 3), 3, 4);
-        board1.setBoard(new Tapis(black, 3, 4), 3, 3);
-        board1.setBoard(new Tapis(black, 5, 3), 5, 2);
-        board1.setBoard(new Tapis(black, 5, 2), 5, 3);
-        board1.setBoard(new Tapis(black, 5, 5), 4, 5);
-        board1.setBoard(new Tapis(black, 4, 5), 5, 5);
-
-        board1.setBoard(new Tapis(white, 3, 2), 3, 1);
-        board1.setBoard(new Tapis(white, 3, 1), 3, 2);
-        board1.setBoard(new Tapis(white, 4, 3), 4, 2);
-        board1.setBoard(new Tapis(white, 4, 2), 4, 3); */
-
-        board1.poseTapis(white, 3, 4, 2, 4);
+        board1.poseTapis(white, 3, 2, 4, 2);
+        board1.bougeVendeur(1, 0, white);
+        board1.poseTapis(white, 3, 1, 2, 1);
+        board1.poseTapis(white, 4,3,3,3);
+        board1.bougeVendeur(1, 0, black);
+        board1.bougeVendeur(1, 2, black);
+        Display.afficheJoueurs(white, black);
+        Display.afficheBoard(board1);
 
 
-        board1.setAsam(3,2);
-        assertEquals(4, board1.nbTapisAdjacents());
-        board1.setAsam(2,2);
-        assertEquals(5, board1.nbTapisAdjacents());
+        assertEquals(6, board1.nbTapisAdjacents());
     }
-
 
 }

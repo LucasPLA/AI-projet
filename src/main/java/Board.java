@@ -83,7 +83,7 @@ public class Board {
             this.board[x][y].setComplementRecouvert();
         }
         // pose le voisin
-        this.board[xpos1][ypos1] = new Tapis(joueur, xpos2, ypos2);
+        this.board[xpos1][ypos1] = new Tapis(joueur, xpos1, ypos1, xpos2, ypos2);
 
         // la même pour le deuxième tapis
         if((this.board[xpos2][ypos2] != null) && (!this.board[xpos2][ypos2].isComplementRecouvert())) {
@@ -91,7 +91,7 @@ public class Board {
             int y = this.board[xpos2][ypos2].getYcomplement();
             this.board[x][y].setComplementRecouvert();
         }
-        this.board[xpos2][ypos2] = new Tapis(joueur, xpos1, ypos1);
+        this.board[xpos2][ypos2] = new Tapis(joueur, xpos2, ypos2, xpos1, ypos1);
 
         joueur.decrementTapis();
 
@@ -102,9 +102,9 @@ public class Board {
         int newXpos = this.xpos;
         int newYpos = this.ypos;
 
-        if(newOrientation == 2) {
+        /*if(newOrientation == 2) {
             throw new RuntimeException();
-        }
+        }*/
 
         if((newOrientation % 2) == 0) {
             newYpos -= (1-newOrientation) * longueur;
@@ -136,46 +136,50 @@ public class Board {
         int compteur = 0;
 
         tapisAVisiter.addFirst(this.board[this.xpos][this.ypos]);
+        tapisVisites.add(this.board[this.xpos][this.ypos]);
+
         while(!tapisAVisiter.isEmpty()) {
             Tapis tmp = tapisAVisiter.removeLast();
             compteur++;
-            tapisVisites.add(tmp);
 
             if(this.estValide(tmp.getX() + 1, tmp.getY()) && ((this.board[tmp.getX() + 1][tmp.getY()]) != null)) {
                 Tapis tapis = this.board[tmp.getX() + 1][tmp.getY()];
-                System.out.println("kermit");
-                if(tapisVisites.contains(tapis)) {
-                    System.out.println("fozzy");
+                if(!tapisVisites.contains(tapis)) {
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
-                        System.out.println("gonzo");
                         tapisAVisiter.addFirst(tapis);
+                        tapisVisites.add(tapis);
                     }
                 }
             }
 
             if(this.estValide(tmp.getX() - 1, tmp.getY()) && (this.board[tmp.getX() - 1][tmp.getY()]) != null) {
                 Tapis tapis = this.board[tmp.getX() - 1][tmp.getY()];
-                if(tapisVisites.contains(tapis)) {
+                if(!tapisVisites.contains(tapis)) {
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
                         tapisAVisiter.addFirst(tapis);
+                        tapisVisites.add(tapis);
+
                     }
                 }
             }
 
             if(this.estValide(tmp.getX(), tmp.getY() - 1) && (this.board[tmp.getX()][tmp.getY() - 1]) != null) {
                 Tapis tapis = this.board[tmp.getX()][tmp.getY() - 1];
-                if(tapisVisites.contains(tapis)) {
+                if(!tapisVisites.contains(tapis)) {
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
                         tapisAVisiter.addFirst(tapis);
+                        tapisVisites.add(tapis);
+
                     }
                 }
             }
 
             if(this.estValide(tmp.getX(), tmp.getY() + 1) && (this.board[tmp.getX()][tmp.getY() + 1]) != null) {
                 Tapis tapis = this.board[tmp.getX()][tmp.getY() + 1];
-                if(tapisVisites.contains(tapis)) {
+                if(!tapisVisites.contains(tapis)) {
                     if(tapis.getPossesseur().equals(this.board[this.xpos][this.ypos].getPossesseur())) {
                         tapisAVisiter.addFirst(tapis);
+                        tapisVisites.add(tapis);
                     }
                 }
             }
@@ -233,5 +237,19 @@ public class Board {
     //
     public static boolean isAdjacent(int x1, int y1, int x2, int y2) {
         return (((Math.abs(x1-x2) == 1) && (Math.abs(y1-y2) == 0)) || ((Math.abs(x1-x2) == 0) && (Math.abs(y1-y2) == 1)));
+    }
+
+    public void getPointTapis(Joueur joueur1, Joueur joueur2) {
+        for (int i = 0; i < this.dimension; i++) {
+            for (int j = 0; j < this.dimension; j++) {
+                if(board[i][j] != null) {
+                    if(board[i][j].getPossesseur().equals(joueur1)) {
+                        joueur1.setArgent(1);
+                    } else {
+                        joueur2.setArgent(1);
+                    }
+                }
+            }
+        }
     }
 }

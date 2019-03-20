@@ -33,7 +33,7 @@ public class Joueur {
     }
 
     public void setArgent(int argent) {
-        this.argent = argent;
+        this.argent += argent;
     }
 
     public void payerJoueur(int argent, Joueur joueur) {

@@ -5,11 +5,13 @@ public class Tapis {
     private int xcomplement, ycomplement;
     private boolean complementRecouvert;
 
-    public Tapis(Joueur possesseur, int xcomplement, int ycomplement) {
+    public Tapis(Joueur possesseur, int x, int y, int xcomplement, int ycomplement) {
         this.possesseur = possesseur;
         this.xcomplement = xcomplement;
         this.ycomplement = ycomplement;
         this.complementRecouvert = false;
+        this.x = x;
+        this.y = y;
     }
 
     public Joueur getPossesseur() {

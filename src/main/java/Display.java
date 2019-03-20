@@ -35,6 +35,11 @@ Dans l'ordre :
         System.out.println(display);
     }
 
+    public static void afficheJoueurs(Joueur j1, Joueur j2) {
+        System.out.println(j1.getPseudo()+" : "+j1.getArgent()+" argent ; " + j1.getNbTapisRestants()+ " tapis");
+        System.out.println(j2.getPseudo()+" : "+j2.getArgent()+" argent ; " + j2.getNbTapisRestants()+ " tapis");
+    }
+
     /*
         //TODO : revoir
     public int choixAsam(){
