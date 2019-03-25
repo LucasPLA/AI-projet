@@ -4,9 +4,22 @@ public class Main {
 
     public static void main(String[] args) {
 
-       /*Partie partie = new Partie(new Joueur("white", "o"), new Joueur("black", "x"), new Board(7));
-       Joueur gagnant = partie.jouerPartie();
-        System.out.println("gagnant"+gagnant.getPseudo());*/
+       double time;
+       time = System.currentTimeMillis();
+       int nbPartie = 0;
+       while((System.currentTimeMillis() - time) < 10000){
+           Partie partie = new Partie(new Joueur("white", "o "), new Joueur("black", "x "), new Board(7));
+           Joueur gagnant = partie.jouerPartieAleatoire();
+           //System.out.println("gagnant"+gagnant.getPseudo());
+           nbPartie++;
+       }
+       System.out.println("Nombre de partie : "+nbPartie);
+       /*System.out.println((int) (Math.random()*3));
+       System.out.println(((int) (Math.random()*4))-1);
+       System.out.println(((int) (Math.random()*3))-1);*/
+
+
+
     }
 }
 

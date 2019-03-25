@@ -81,12 +81,12 @@ class BoardTest {
 
     @Test
     void testPoseTapis() {
-        Tapis[][] tapis = board1.poseTapis(black, 2, 3, 2, 2);
-        assertEquals(tapis[2][3].getPossesseur(), black);
-        assertEquals(tapis[2][2].getPossesseur(), black);
-        assertNull(tapis[3][2]);
-        assertNull(tapis[4][3]);
-        assertNull(tapis[3][4]);
+        board1.poseTapis(black, 2, 3, 2, 2);
+        assertEquals(board1.getBoard()[2][3].getPossesseur(), black);
+        assertEquals(board1.getBoard()[2][2].getPossesseur(), black);
+        assertNull(board1.getBoard()[3][2]);
+        assertNull(board1.getBoard()[4][3]);
+        assertNull(board1.getBoard()[3][4]);
     }
 
     @Test
@@ -104,11 +104,11 @@ class BoardTest {
 
     @Test
     void testPoseMoitieTapisSurUnAutre() {
-        Tapis[][] tapis = board1.poseTapis(black, 2, 3, 2, 2);
-        tapis = board1.poseTapis(white, 2, 3, 1, 3);
-        assertEquals(tapis[2][3].getPossesseur(), white);
-        assertEquals(tapis[1][3].getPossesseur(), white);
-        assertEquals(tapis[2][2].getPossesseur(), black);
+        board1.poseTapis(black, 2, 3, 2, 2);
+        board1.poseTapis(white, 2, 3, 1, 3);
+        assertEquals(board1.getBoard()[2][3].getPossesseur(), white);
+        assertEquals(board1.getBoard()[1][3].getPossesseur(), white);
+        assertEquals(board1.getBoard()[2][2].getPossesseur(), black);
     }
 
     @Test

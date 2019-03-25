@@ -44,6 +44,8 @@ public class Board {
         return dimension;
     }
 
+    public Tapis[][] getBoard() {return board;}
+
     // Pose Asam a la position voulue
     public void setAsam(int x, int y) {xpos=x; ypos=y;}
 
@@ -60,20 +62,23 @@ public class Board {
         return res;
     }
 
-    public Tapis[][] poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) { // todo verifier que l'on pas poser sous asam
+    public boolean poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) { // todo verifier que l'on pas poser sous asam
         // verifie les deux moitiés sont bien adjacente et valides
         if(!(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2))) {
-            throw new RuntimeException();
+            return false;
+            //throw new RuntimeException();
         }
 
         // verifier que le tapis est bien a coté d'asam
         if(!(Board.isAdjacent(this.xpos, this.ypos, xpos1, ypos1) || Board.isAdjacent(this.xpos, this.ypos, xpos2, ypos2))) {
-            throw new RuntimeException();
+            return false;
+            //throw new RuntimeException();
         }
 
         // vérifie que tu ne recouvre pas un tapis complet
         if((this.board[xpos1][ypos1] != null) && (this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
-            throw new RuntimeException();
+            return false;
+            //throw new RuntimeException();
         }
 
         // indique au voisin que l'on recouvre que son autre moitié va être recouverte
@@ -95,7 +100,7 @@ public class Board {
 
         joueur.decrementTapis();
 
-        return this.board;
+        return true;
     }
 
     public void bougeVendeur(int longueur, int newOrientation, Joueur joueurActif) {

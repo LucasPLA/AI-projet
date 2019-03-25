@@ -17,7 +17,9 @@ public class Partie {
     }
 
     public Joueur jouerPartieJoueur() {
-        while(black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0 || white.getArgent() > 0 || black.getArgent() > 0){
+        boolean bool;
+        Display.afficheBoard(board);
+        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
             Scanner sc = new Scanner(System.in);
             //0: gauche, 1: devant, 2: droite
             System.out.println("Entrez la direction (0: devant, 1:droite, 3:gauche) :");
@@ -27,16 +29,22 @@ public class Partie {
             Display.afficheBoard(board);
             Display.afficheJoueurs(black, white);
 
-            System.out.println("-1:haut/ 0:droite/ 1:bas/ 2:gauche ?");
-            int pos1 = Integer.parseInt(sc.nextLine());
+            bool = false;
 
-            System.out.println("-1:gauche / 0:droit / 1:droite");
-            int pos2 = Integer.parseInt(sc.nextLine());
+            while(!bool){
+                System.out.println("-1:haut/ 0:droite/ 1:bas/ 2:gauche ?");
+                int pos1 = Integer.parseInt(sc.nextLine());
 
-            poseTapis(board, joueurActif, pos1, pos2);
+                System.out.println("-1:gauche / 0:droit / 1:droite");
+                int pos2 = Integer.parseInt(sc.nextLine());
+
+                bool = poseTapis(board, joueurActif, pos1, pos2);
+                if(!bool){
+                    System.out.println("Position invalide veuillez rééssayer");
+                }
+            }
+
             Display.afficheBoard(board);
-
-            joueurActif = (joueurActif == white) ? black : white;
         }
 
         if(white.getArgent() <= 0) {
@@ -51,15 +59,19 @@ public class Partie {
     }
 
     public Joueur jouerPartieAleatoire() {
-        while(black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0 || white.getArgent() > 0 || black.getArgent() > 0){
-            int direction = (int) Math.random()*3;
+        boolean bool;
+        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+            int direction = (int) (Math.random()*3);
             if (direction == 2) direction++;
-
             jouerCoup(board, joueurActif, direction);
 
-            int directionTapis = (int) Math.random()*4;
-            int directionTapis2 = 0;
-            poseTapis(board, joueurActif, directionTapis, directionTapis2);
+            jouerCoup(board, joueurActif, direction);
+            bool = false;
+            while(!bool){
+                int directionTapis = ((int) (Math.random()*4))-1;
+                int directionTapis2 = ((int) (Math.random()*3))-1;
+                bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
+            }
             joueurActif = (joueurActif == white) ? black : white;
         }
 
@@ -82,14 +94,14 @@ public class Partie {
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
     }
 
-    public void poseTapis(Board board, Joueur joueurActif, int pos1, int pos2) {
+    public boolean poseTapis(Board board, Joueur joueurActif, int pos1, int pos2) {
 
-        int x1 = board.getAsam()[0] + ((pos1-1) % 2);
+        int x1 = board.getAsam()[0] - ((pos1-1) % 2);
         int y1 = board.getAsam()[1] + (pos1 % 2);
 
         int x2, y2;
         if(pos1 % 2 != 0) {
-            if((pos2 % 2) != 0) { //TODO
+            if((pos2 % 2) != 0) {
                 x2 = x1 - (pos1*pos2);
                 y2 = y1;
             } else {
@@ -98,13 +110,17 @@ public class Partie {
             }
         } else {
             if((pos2 % 2) != 0) {
-                //TODO : utiliser la symetrie
+                x2 = x1;
+                y2 = y1 - ((pos1-1)*pos2);
+            } else {
+                x2 = x1 - (pos1-1);
+                y2 = y1;
             }
-            x2 = 0;
-            y2 = 0;
         }
 
-        board.poseTapis(joueurActif, x1, y1, x2, y2);
+        //System.out.println("("+x1+";"+y1+") ; ("+x2+";"+y2+")");
+
+        return board.poseTapis(joueurActif, x1, y1, x2, y2);
     }
 
     /* public List<Integer> getDirectionsPossibles() {
