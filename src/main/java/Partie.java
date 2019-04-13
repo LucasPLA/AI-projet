@@ -16,6 +16,18 @@ public class Partie {
         this.joueurActif = white;
     }
 
+    public Partie(Partie p){
+        this.white = new Joueur(p.white);
+        this.black = new Joueur(p.black);
+        this.board = new Board(p.board);
+        this.joueurActif = black;
+        /*if(p.joueurActif.equals(p.white)){
+            this.joueurActif = this.white;
+        } else {
+            this.joueurActif = this.black;
+        }*/
+    }
+
     public Joueur jouerPartieJoueur() {
         boolean bool;
         Display.afficheBoard(board);
@@ -45,6 +57,7 @@ public class Partie {
             }
 
             Display.afficheBoard(board);
+            joueurActif = (joueurActif == white) ? black : white;
         }
 
         if(white.getArgent() <= 0) {
@@ -56,6 +69,73 @@ public class Partie {
         board.getPointTapis(white, black);
 
         return (white.getArgent() > black.getArgent()) ? white : black;
+    }
+
+    public Joueur jouerPartieJoueurVsIA() {
+        boolean bool;
+        Display.afficheBoard(board);
+
+        // Joueur
+
+        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+            Scanner sc = new Scanner(System.in);
+            //0: gauche, 1: devant, 2: droite
+            System.out.println("Entrez la direction (0: devant, 1:droite, 3:gauche) :");
+            String str = sc.nextLine();
+
+            jouerCoup(board, joueurActif, Integer.parseInt(str));
+            Display.afficheBoard(board);
+            Display.afficheJoueurs(black, white);
+
+            bool = false;
+
+            while(!bool){
+                System.out.println("-1:haut/ 0:droite/ 1:bas/ 2:gauche ?");
+                int pos1 = Integer.parseInt(sc.nextLine());
+
+                System.out.println("-1:gauche / 0:droit / 1:droite");
+                int pos2 = Integer.parseInt(sc.nextLine());
+
+                bool = poseTapis(board, joueurActif, pos1, pos2);
+                if(!bool){
+                    System.out.println("Position invalide veuillez rééssayer");
+                }
+            }
+
+            Display.afficheBoard(board);
+
+            joueurActif = (joueurActif == white) ? black : white;
+
+            // IA
+
+            IA ia = new IA(this);
+            int direction = ia.moveChoice();
+            if (direction == 2) direction++;
+            jouerCoup(board, joueurActif, direction);
+            jouerCoup(board, joueurActif, direction);
+            bool = false;
+            while(!bool){
+                int directionTapis = ((int) (Math.random()*4))-1;
+                int directionTapis2 = ((int) (Math.random()*3))-1;
+                bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
+            }
+
+            Display.afficheBoard(board);
+
+            joueurActif = (joueurActif == white) ? black : white;
+
+        }
+
+        if(white.getArgent() <= 0) {
+            return black;
+        }
+        if(black.getArgent() <= 0) {
+            return white;
+        }
+        board.getPointTapis(white, black);
+
+        return (white.getArgent() > black.getArgent()) ? white : black;
+
     }
 
     public Joueur jouerPartieAleatoire() {
@@ -84,6 +164,33 @@ public class Partie {
         board.getPointTapis(white, black);
 
         return (white.getArgent() > black.getArgent()) ? white : black;
+    }
+
+    public void jouerUnCoupDouble(int dir) { // Pour le MCTS
+        int direction = (int) (Math.random()*3);
+        if (direction == 2) direction++;
+        jouerCoup(board, joueurActif, direction);
+
+        jouerCoup(board, joueurActif, direction);
+        boolean bool = false;
+        while(!bool){
+            int directionTapis = ((int) (Math.random()*4))-1;
+            int directionTapis2 = ((int) (Math.random()*3))-1;
+            bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
+        }
+        joueurActif = (joueurActif == white) ? black : white;
+        direction = (int) (Math.random()*3);
+        if (direction == 2) direction++;
+        jouerCoup(board, joueurActif, direction);
+
+        jouerCoup(board, joueurActif, direction);
+        bool = false;
+        while(!bool){
+            int directionTapis = ((int) (Math.random()*4))-1;
+            int directionTapis2 = ((int) (Math.random()*3))-1;
+            bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
+        }
+        joueurActif = (joueurActif == white) ? black : white;
     }
 
     public void jouerCoup(Board board, Joueur joueurActif, int direction) {

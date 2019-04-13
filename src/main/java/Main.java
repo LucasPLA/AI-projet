@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-       double time;
+       /*double time;
        time = System.currentTimeMillis();
        int nbPartie = 0;
        while((System.currentTimeMillis() - time) < 10000){
@@ -17,6 +17,10 @@ public class Main {
        /*System.out.println((int) (Math.random()*3));
        System.out.println(((int) (Math.random()*4))-1);
        System.out.println(((int) (Math.random()*3))-1);*/
+
+       Partie partie = new Partie(new Joueur("white", "o "), new Joueur("black", "x "), new Board(7));
+       Joueur winner = partie.jouerPartieJoueurVsIA();
+       System.out.println("Le gagnant est "+winner.getPseudo());
 
 
 

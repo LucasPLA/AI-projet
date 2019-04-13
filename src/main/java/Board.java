@@ -36,6 +36,19 @@ public class Board {
         this.orientation = 0;
     }
 
+    public Board(Board b){
+        this.dimension = b.dimension;
+        this.board = new Tapis[dimension][dimension];
+        for(int i=0; i<dimension; i++){
+            for(int j = 0; j < dimension; j++){
+                this.board[i][j] = b.board[i][j];
+            }
+        }
+        this.xpos = b.xpos;
+        this.ypos = b.ypos;
+        this.orientation = b.orientation;
+    }
+
     public int getOrientation(){
         return orientation;
     }

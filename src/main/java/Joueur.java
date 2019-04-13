@@ -14,6 +14,13 @@ public class Joueur {
         this.color = couleur;
     }
 
+    public Joueur(Joueur j){
+        this.pseudo = j.pseudo;
+        this.nbTapisRestants = j.nbTapisRestants;
+        this.argent = j.argent;
+        this.color = j.color;
+    }
+
     public int getNbTapisRestants() {
         return nbTapisRestants;
     }
