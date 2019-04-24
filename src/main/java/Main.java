@@ -20,7 +20,9 @@ public class Main {
 
        Partie partie = new Partie(new Joueur("white", "o "), new Joueur("black", "x "), new Board(7));
        Joueur winner = partie.jouerPartieJoueurVsIA();
-       System.out.println("Le gagnant est "+winner.getPseudo());
+       //Joueur winner = partie.jouerPartieJoueur();
+
+        System.out.println("Le gagnant est "+winner.getPseudo());
 
 
 

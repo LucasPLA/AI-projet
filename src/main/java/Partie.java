@@ -20,15 +20,14 @@ public class Partie {
         this.white = new Joueur(p.white);
         this.black = new Joueur(p.black);
         this.board = new Board(p.board);
-        this.joueurActif = black;
-        /*if(p.joueurActif.equals(p.white)){
+        if(p.joueurActif.equals(p.white)){
             this.joueurActif = this.white;
         } else {
             this.joueurActif = this.black;
-        }*/
+        }
     }
 
-    public Joueur jouerPartieJoueur() {
+    public Joueur jouerPartieJoueur() { // Player vs player
         boolean bool;
         Display.afficheBoard(board);
         while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
@@ -71,13 +70,14 @@ public class Partie {
         return (white.getArgent() > black.getArgent()) ? white : black;
     }
 
-    public Joueur jouerPartieJoueurVsIA() {
+    public Joueur jouerPartieJoueurVsIA() { // Player vs IA
         boolean bool;
         Display.afficheBoard(board);
 
-        // Joueur
-
         while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+
+            // Joueur
+
             Scanner sc = new Scanner(System.in);
             //0: gauche, 1: devant, 2: droite
             System.out.println("Entrez la direction (0: devant, 1:droite, 3:gauche) :");
@@ -109,9 +109,16 @@ public class Partie {
             // IA
 
             IA ia = new IA(this);
+            System.out.println("Argent white :"+white.getArgent());
+            int wb = white.getArgent();
+            int bb = black.getArgent();
             int direction = ia.moveChoice();
+            int wa = white.getArgent();
+            int ba = black.getArgent();
+            white.setArgent(wb-wa);
+            black.setArgent(bb-ba);
+            System.out.println("Argent blanc :"+white.getArgent());
             if (direction == 2) direction++;
-            jouerCoup(board, joueurActif, direction);
             jouerCoup(board, joueurActif, direction);
             bool = false;
             while(!bool){
@@ -138,7 +145,7 @@ public class Partie {
 
     }
 
-    public Joueur jouerPartieAleatoire() {
+    public Joueur jouerPartieAleatoire() { // IA qui joue aléatoirement toute une partie
         boolean bool;
         while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
             int direction = (int) (Math.random()*3);
@@ -166,12 +173,9 @@ public class Partie {
         return (white.getArgent() > black.getArgent()) ? white : black;
     }
 
-    public void jouerUnCoupDouble(int dir) { // Pour le MCTS
-        int direction = (int) (Math.random()*3);
-        if (direction == 2) direction++;
-        jouerCoup(board, joueurActif, direction);
-
-        jouerCoup(board, joueurActif, direction);
+    public void jouerUnCoupComplet(int dir) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
+        if (dir == 2) dir++;
+        jouerCoup(board, joueurActif, dir);
         boolean bool = false;
         while(!bool){
             int directionTapis = ((int) (Math.random()*4))-1;
@@ -179,7 +183,7 @@ public class Partie {
             bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
         }
         joueurActif = (joueurActif == white) ? black : white;
-        direction = (int) (Math.random()*3);
+        /*direction = (int) (Math.random()*3);
         if (direction == 2) direction++;
         jouerCoup(board, joueurActif, direction);
 
@@ -190,10 +194,10 @@ public class Partie {
             int directionTapis2 = ((int) (Math.random()*3))-1;
             bool = poseTapis(board, joueurActif, directionTapis, directionTapis2);
         }
-        joueurActif = (joueurActif == white) ? black : white;
+        joueurActif = (joueurActif == white) ? black : white;*/
     }
 
-    public void jouerCoup(Board board, Joueur joueurActif, int direction) {
+    public void jouerCoup(Board board, Joueur joueurActif, int direction) { // Bouge le vendeur selon la direction indiquée
         int nbCases = ((int)(Math.random()*6))+1; // Random roll
         nbCases = (nbCases >4) ? nbCases - 3 : nbCases;
 

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class IA { // MCTS
 
-    static Random r = new Random(); // Pour éviter les cas d'égalité
+    //static Random r = new Random(); // Pour éviter les cas d'égalité
     static int nActions = 3; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
     static double epsilon = 1e-6; // Pour éviter les divisions par 0
 
@@ -48,9 +48,14 @@ public class IA { // MCTS
             cur = cur.select(); // Sélection du noeud enfant
             visited.add(cur);
         }
-        cur.expand(); // Expansion une fois la feuille atteinte
-        IA newNode = cur.select();
-        visited.add(newNode);
+        IA newNode;
+        if(cur.nVisits != 0){
+            cur.expand(); // Expansion si la feuille a déjà été visitée
+            newNode = cur.select();
+            visited.add(newNode);
+        } else {
+            newNode = cur;
+        }
         int value = rollOut(newNode); // Partie aléatoire joué depuis le noeud choisi
         for (IA node : visited) { // Maj des noeuds visité
             node.updateStats(value);
@@ -62,18 +67,23 @@ public class IA { // MCTS
         children = new IA[nActions];
         for (int i=0; i<nActions; i++) {
             p = new Partie(this.game);
-            p.jouerUnCoupDouble(i);
+            p.jouerUnCoupComplet(i);
             children[i] = new IA(p);
         }
     }
 
     private IA select() {
         IA selected = null;
+        double uctValue;
         double bestValue = Double.MIN_VALUE;
         for (IA c : children) {
-            double uctValue = c.totValue / (c.nVisits + epsilon) +
-                    Math.sqrt(Math.log(nVisits+1) / (c.nVisits + epsilon)) +
-                    r.nextDouble() * epsilon;
+            if(c.nVisits!=0){
+                uctValue = (c.totValue / c.nVisits) +
+                        (Math.sqrt(2) * (Math.sqrt(Math.log(nVisits+1) / c.nVisits)));
+            } else {
+                uctValue = Double.MAX_VALUE;
+            }
+
             if (uctValue > bestValue) {
                 selected = c;
                 bestValue = uctValue;
@@ -88,7 +98,7 @@ public class IA { // MCTS
 
     public int rollOut(IA a) {
         Partie p = new Partie(a.game);
-        if(a.game.joueurActif.equals(p.jouerPartieAleatoire())){
+        if(p.jouerPartieAleatoire().getPseudo() == "black"){
             return 1;
         }
         return 0;
