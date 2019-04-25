@@ -19,9 +19,9 @@ public class Main {
 
        Partie partie = new Partie(new Joueur("white", "o "), new Joueur("black", "x "), new Board(7));
 
-       //Joueur winner = partie.jouerPartieJoueurVsIA(); // Joueur VS IA
+       Joueur winner = partie.jouerPartieJoueurVsIA(); // Joueur VS IA
        //Joueur winner = partie.jouerPartieJoueur(); // Joueur VS Joueur
-       Joueur winner = partie.jouerRandomIaVsMctsIa(); // Random VS MCTS
+       //Joueur winner = partie.jouerRandomIaVsMctsIa(); // Random VS MCTS
 
         System.out.println("Le gagnant est "+winner.getPseudo());
 

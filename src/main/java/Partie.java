@@ -110,6 +110,7 @@ public class Partie {
     public void jouerUnCoupComplet(int direction, int nbCases) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
         if (direction == 2) direction++;
         jouerCoupDetermine(board, joueurActif, direction, nbCases);
+        positionTapis();
         joueurActif = (joueurActif == white) ? black : white;
     }
 
