@@ -107,9 +107,9 @@ public class Partie {
         return calculWinner();
     }
 
-    public void jouerUnCoupComplet(int direction, int nbCases) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
+    public void jouerUnCoupComplet(int direction, int nbCases, int posTapis, int oriTapis) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
         if (direction == 2) direction++;
-        jouerCoupDetermine(board, joueurActif, direction, nbCases);
+        jouerCoupDetermine(board, joueurActif, direction, nbCases, posTapis, oriTapis);
         joueurActif = (joueurActif == white) ? black : white;
     }
 
@@ -134,9 +134,10 @@ public class Partie {
         jouerCoup(board, direction);
     }
 
-    public void jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
+    public void jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int posTapis, int oriTapis) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
+        poseTapis(this.board, posTapis, oriTapis);
     }
 
     public void coupDuJoueur(){

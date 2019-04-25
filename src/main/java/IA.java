@@ -4,18 +4,20 @@ import java.util.List;
 public class IA { // MCTS
 
     //static Random r = new Random(); // Pour éviter les cas d'égalité
-    static int nActions = 12; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
+    static int nActions = 144; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
     //static double epsilon = 1e-6; // Pour éviter les divisions par 0
 
     IA[] children; // Noeuds enfants
     int nVisits; // Nb de visite du noeud
     int nWins; // Nb de partie gagnée dans le noeud
-    Partie game;
+    Partie game; // Etat de la partie dans le neoud
+    boolean valid; // Noeud invalide si position invalide
 
     public IA(Partie game){
         children = null;
         nVisits = 0;
         nWins = 0;
+        valid = true;
         this.game = new Partie(game);
     }
 
@@ -73,7 +75,7 @@ public class IA { // MCTS
         children = new IA[nActions];
         for (int i=0; i<nActions; i++) {
             p = new Partie(this.game);
-            p.jouerUnCoupComplet((i/4), ((i%4)+1)); // Joue un coup avec la direction et le nombre de cases indiqués
+            p.jouerUnCoupComplet((i/48), (((i%48)/12)+1), ((i%12)/3), (i%3)); // (direction, nbCases, posTapis, orientationTapis
             children[i] = new IA(p);
         }
     }
