@@ -14,7 +14,47 @@ Dans l'ordre :
  */
 
     // Mets à jour l'état du plateau pour la console
-    public static void afficheBoard(Board board){
+    public static void afficheBoard(Board board){ // Nouvelle affichage avec les bordures limites
+        String display = "    0 1 2 3 4 5 6\n";
+        display += "    ";
+        for(int i = 0; i<(board.getDimension()/2)+1; i++){
+            display += "\u2554\u2550\u2557 ";
+        }
+        display += "\n";
+
+        for(int i = 0; i<board.getDimension(); i++){
+            display += (i) +" ";
+            if(i%2==0){
+                display += "\u2554 ";
+            } else {
+                display += "\u255A ";
+            }
+            for(int j = 0; j<board.getDimension(); j++){
+                if(board.isAsam(j,i)){
+                    display += asamDisplay[board.getOrientation()]+" ";
+                } else {
+                    if(board.getCase(j,i) == null){
+                        display += ". ";
+                    } else {
+                        display += board.getCase(j,i).getPossesseur().getColor();
+                    }
+                }
+            }
+            if(i%2==0){
+                display += "\u255D ";
+            } else {
+                display += "\u2557 ";
+            }
+            display += "\n";
+        }
+        display += "  ";
+        for(int i = 0; i<(board.getDimension()/2)+1; i++){
+            display += "\u255A\u2550\u255D ";
+        }
+        System.out.println(display);
+    }
+
+    /*public static void afficheBoard(Board board){ // Ancienne affichage
         String display = "  0 1 2 3 4 5 6\n";
 
         for(int i = 0; i<board.getDimension(); i++){
@@ -32,12 +72,13 @@ Dans l'ordre :
             }
             display += "\n";
         }
+        display += "  ";
         System.out.println(display);
-    }
+    }*/
 
     public static void afficheJoueurs(Joueur j1, Joueur j2) {
-        System.out.println(j1.getPseudo()+" : "+j1.getArgent()+" argent ; " + j1.getNbTapisRestants()+ " tapis");
-        System.out.println(j2.getPseudo()+" : "+j2.getArgent()+" argent ; " + j2.getNbTapisRestants()+ " tapis");
+        System.out.println("Le joueur "+j1.getPseudo()+" a "+j1.getArgent()+" dirhams et " + j1.getNbTapisRestants()+ " tapis restants");
+        System.out.println("Le joueur "+j2.getPseudo()+" a "+j2.getArgent()+" dirhams et " + j2.getNbTapisRestants()+ " tapis restants");
     }
 
     /*

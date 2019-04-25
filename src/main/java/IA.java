@@ -1,42 +1,48 @@
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public class IA { // MCTS
 
     //static Random r = new Random(); // Pour éviter les cas d'égalité
-    static int nActions = 3; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
-    static double epsilon = 1e-6; // Pour éviter les divisions par 0
+    static int nActions = 12; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
+    //static double epsilon = 1e-6; // Pour éviter les divisions par 0
 
     IA[] children; // Noeuds enfants
     int nVisits; // Nb de visite du noeud
-    int totValue; // Nb de partie gagnée dans le noeud
+    int nWins; // Nb de partie gagnée dans le noeud
     Partie game;
 
     public IA(Partie game){
         children = null;
         nVisits = 0;
-        totValue = 0;
+        nWins = 0;
         this.game = new Partie(game);
     }
 
-    public int moveChoice(){
+    public int moveChoice(){ // Choix du movement de l'IA à partir du MCTS
+        System.out.println("L'IA choisi la meilleure orientation à partir du MCTS :");
         double time;
         time = System.currentTimeMillis();
         int nbPartie = 0;
-        while((System.currentTimeMillis() - time) < 10000){
+        while((System.currentTimeMillis() - time) < 10000){ // L'algo du MCTS tourne pendant 10 seconde
             this.selectAction();
         }
-        double max = -1;
+        int max = -1;
+        int sum = 0;
         int choice = 0;
-        for(int i = 0; i<nActions; i++){
-            if(this.children[i].totValue > max){
-                choice = i;
-                max = this.children[i].totValue;
+        for(int i = 0; i<3; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
+            sum = 0;
+            for(int j = 0; j<4; j++){
+                sum += this.children[(4*i)+j].nWins;
             }
-            System.out.println("Dir "+i+" gagne "+this.children[i].totValue+" games");
+            if(sum > max){
+                choice = i;
+                max = sum;
+            }
+            System.out.println("La direction "+i+" gagne "+ sum +" parties virtuelles");
         }
-        System.out.println("L'IA a joué "+this.nVisits+" coups");
+        System.out.println("L'IA a joué "+this.nVisits+" parties");
+        System.out.println("Elle choisit la direction "+choice+" qui semble la plus prometteuse");
         return choice;
     }
 
@@ -62,23 +68,23 @@ public class IA { // MCTS
         }
     }
 
-    public void expand() {
+    public void expand() { // Expansion du noeud
         Partie p;
         children = new IA[nActions];
         for (int i=0; i<nActions; i++) {
             p = new Partie(this.game);
-            p.jouerUnCoupComplet(i);
+            p.jouerUnCoupComplet((i/4), ((i%4)+1)); // Joue un coup avec la direction et le nombre de cases indiqués
             children[i] = new IA(p);
         }
     }
 
-    private IA select() {
+    private IA select() { // Selection du noeud enfant
         IA selected = null;
         double uctValue;
         double bestValue = Double.MIN_VALUE;
         for (IA c : children) {
             if(c.nVisits!=0){
-                uctValue = (c.totValue / c.nVisits) +
+                uctValue = (c.nWins / c.nVisits) +
                         (Math.sqrt(2) * (Math.sqrt(Math.log(nVisits+1) / c.nVisits)));
             } else {
                 uctValue = Double.MAX_VALUE;
@@ -96,7 +102,7 @@ public class IA { // MCTS
         return children == null;
     }
 
-    public int rollOut(IA a) {
+    public int rollOut(IA a) { // Dérouler une partie aléatoire
         Partie p = new Partie(a.game);
         if(p.jouerPartieAleatoire().getPseudo() == "black"){
             return 1;
@@ -106,7 +112,7 @@ public class IA { // MCTS
 
     public void updateStats(double value) {
         nVisits++;
-        totValue += value;
+        nWins += value;
     }
 
     public int arity() {
