@@ -13,11 +13,11 @@ public class IA { // MCTS
     Partie game; // Etat de la partie dans le neoud
     boolean valid; // Noeud invalide si position invalide
 
-    public IA(Partie game){
+    public IA(Partie game, boolean v){
         children = null;
         nVisits = 0;
         nWins = 0;
-        valid = true;
+        valid = v;
         this.game = new Partie(game);
     }
 
@@ -34,8 +34,8 @@ public class IA { // MCTS
         int choice = 0;
         for(int i = 0; i<3; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
             sum = 0;
-            for(int j = 0; j<4; j++){
-                sum += this.children[(4*i)+j].nWins;
+            for(int j = 0; j<48; j++){
+                sum += this.children[(48*i)+j].nWins;
             }
             if(sum > max){
                 choice = i;
@@ -72,11 +72,12 @@ public class IA { // MCTS
 
     public void expand() { // Expansion du noeud
         Partie p;
+        boolean v;
         children = new IA[nActions];
         for (int i=0; i<nActions; i++) {
             p = new Partie(this.game);
-            p.jouerUnCoupComplet((i/48), (((i%48)/12)+1), ((i%12)/3), (i%3)); // (direction, nbCases, posTapis, orientationTapis
-            children[i] = new IA(p);
+            v = p.jouerUnCoupComplet((i/48), (((i%48)/12)+1), (((i%12)/3)-1), ((i%3))-1); // (direction, nbCases, posTapis, orientationTapis
+            children[i] = new IA(p, v);
         }
     }
 
@@ -85,16 +86,18 @@ public class IA { // MCTS
         double uctValue;
         double bestValue = Double.MIN_VALUE;
         for (IA c : children) {
-            if(c.nVisits!=0){
-                uctValue = (c.nWins / c.nVisits) +
-                        (Math.sqrt(2) * (Math.sqrt(Math.log(nVisits+1) / c.nVisits)));
-            } else {
-                uctValue = Double.MAX_VALUE;
-            }
+            if(c.valid){
+                if(c.nVisits!=0){
+                    uctValue = (c.nWins / c.nVisits) +
+                            (Math.sqrt(2) * (Math.sqrt(Math.log(nVisits+1) / c.nVisits)));
+                } else {
+                    uctValue = Double.MAX_VALUE;
+                }
 
-            if (uctValue > bestValue) {
-                selected = c;
-                bestValue = uctValue;
+                if (uctValue > bestValue) {
+                    selected = c;
+                    bestValue = uctValue;
+                }
             }
         }
         return selected;
