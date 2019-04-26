@@ -27,7 +27,7 @@ public class Partie {
 
     public Joueur jouerPartieJoueur() { // Player vs player
         Display.afficheBoard(board);
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
             coupDuJoueur();
 
             Display.afficheBoard(board);
@@ -42,7 +42,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Joueur
 
@@ -56,7 +56,6 @@ public class Partie {
             // IA
 
             jouerCoupMCTS();
-            positionTapis();
 
             Display.afficheBoard(board);
             Display.afficheJoueurs(white, black);
@@ -70,7 +69,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Random IA
 
@@ -78,15 +77,15 @@ public class Partie {
             if (direction == 2) direction++;
             jouerCoup(board, direction);
             positionTapis();
-            changementJoueur();
 
             Display.afficheBoard(board);
             Display.afficheJoueurs(white, black);
 
+            changementJoueur();
+
             // MCTS IA
 
             jouerCoupMCTS();
-            positionTapis();
 
             Display.afficheBoard(board);
             Display.afficheJoueurs(white, black);
@@ -123,16 +122,29 @@ public class Partie {
     }
 
     public void jouerCoupMCTS(){
-        IA ia = new IA(this);
+        IA iaOri = new IA(this, true, true);
         int wb = white.getArgent();
         int bb = black.getArgent();
-        int direction = ia.moveChoice();
+        int direction = iaOri.moveChoiceOri();
         int wa = white.getArgent();
         int ba = black.getArgent();
         white.setArgent(wb-wa);
         black.setArgent(bb-ba);
         if (direction == 2) direction++;
         jouerCoup(board, direction);
+
+        Display.afficheBoard(board);
+        Display.afficheJoueurs(white, black);
+
+        IA iaPos = new IA(this, false, true);
+        wb = white.getArgent();
+        bb = black.getArgent();
+        int position = iaPos.moveChoicePose();
+        wa = white.getArgent();
+        ba = black.getArgent();
+        white.setArgent(wb-wa);
+        black.setArgent(bb-ba);
+        poseTapis(board, ((position/3)-1), ((position%3)-1));
     }
 
     public void jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
