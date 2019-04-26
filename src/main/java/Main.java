@@ -24,6 +24,7 @@ public class Main {
        //Joueur winner = partie.jouerRandomIaVsMctsIa(); // Random VS MCTS
 
         System.out.println("Le gagnant est "+winner.getPseudo());
+        System.out.print("slt");
 
     }
 }
