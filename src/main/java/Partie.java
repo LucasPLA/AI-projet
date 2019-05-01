@@ -131,12 +131,12 @@ public class Partie {
         int ba = black.getArgent();
         white.setArgent(wb-wa);
         black.setArgent(bb-ba);
-        int direction = (choice/48);
+        int direction = (choice);
         if (direction == 2) direction++;
         int nbC = jouerCoup(board, direction);
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
-        int pos = ia.poseChoice((choice/48), nbC);
+        int pos = ia.poseChoice((choice), nbC);
         boolean v = poseTapis(board, (pos/3)-1,(pos%3)-1);
         if(!v){
             positionTapis();
