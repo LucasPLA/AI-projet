@@ -32,17 +32,40 @@ public class IA { // MCTS
         int max = -1;
         int choice = 0;
         int val;
+        int sum = 0;
         for(int i = 0; i<144; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
             val = children[i].nWins;
+            sum+=val;
             if(val > max){
                 choice = i;
                 max = val;
             }
-            System.out.println("La direction "+(i/48)+" gagne "+ val +" points");
+            if(i%48==47){
+                System.out.println("La direction "+(i/48)+" gagne "+ sum +" points");
+                sum = 0;
+            }
+
         }
         System.out.println("L'IA a joué "+this.nVisits+" parties");
         System.out.println("Elle choisit la direction "+(choice/48)+" qui semble la plus prometteuse");
         return choice;
+    }
+
+    public int poseChoice(int i, int j) {
+        System.out.println("L'IA récupère la meilleure position pour son tapis depuis le MCTS");
+        int offset = ((i*48)+(j*12));
+        int max = -1;
+        int choice = 0;
+        int val;
+        for(int k = offset; k<offset+12; k++){
+            val = children[k].nWins;
+            if(val > max){
+                choice = k;
+                max = val;
+            }
+            System.out.println("La position ("+(((k%12)/3)-1)+";"+((k%3)-1)+") remporte "+val+" points");
+        }
+        return choice%12;
     }
 
     public void selectAction() {

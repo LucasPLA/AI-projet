@@ -113,12 +113,13 @@ public class Partie {
         return v;
     }
 
-    public void jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
+    public int jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
         int nbCases = ((int)(Math.random()*6))+1; // Random roll
         nbCases = (nbCases >4) ? nbCases - 3 : nbCases;
 
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, this.joueurActif);
+        return nbCases-1;
     }
 
     public void jouerCoupMCTS(){
@@ -132,12 +133,14 @@ public class Partie {
         black.setArgent(bb-ba);
         int direction = (choice/48);
         if (direction == 2) direction++;
-        boolean v = jouerCoupDetermine(board, joueurActif, direction,((choice%48)/12)+1, (((choice%12)/3)-1), ((choice%3))-1);
+        int nbC = jouerCoup(board, direction);
+        Display.afficheBoard(board);
+        Display.afficheJoueurs(white, black);
+        int pos = ia.poseChoice((choice/48), nbC);
+        boolean v = poseTapis(board, (pos/3)-1,(pos%3)-1);
         if(!v){
             positionTapis();
         }
-        Display.afficheBoard(board);
-        Display.afficheJoueurs(white, black);
     }
 
     public boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int pos1, int pos2) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
