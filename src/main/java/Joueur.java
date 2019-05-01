@@ -3,9 +3,9 @@ import java.util.Objects;
 public class Joueur {
 
     private int nbTapisRestants;
-    private String pseudo;
+    private final String pseudo;
     private int argent;
-    private String color;
+    private final String color;
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;

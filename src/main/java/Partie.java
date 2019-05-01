@@ -1,11 +1,14 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class Partie {
 
-    Joueur white;
-    Joueur black;
-    Board board;
-    Joueur joueurActif;
+    private static final Random random = new Random();
+
+    private final Joueur white;
+    private final Joueur black;
+    private final Board board;
+    private Joueur joueurActif;
 
     public Partie(Joueur white, Joueur black, Board board) {
         this.white = white;
@@ -73,7 +76,7 @@ public class Partie {
 
             // Random IA
 
-            int direction = (int) (Math.random()*3);
+            int direction = random.nextInt(3);
             if (direction == 2) direction++;
             jouerCoup(board, direction);
             positionTapis();
@@ -97,7 +100,7 @@ public class Partie {
 
     public Joueur jouerPartieAleatoire() { // IA qui joue aléatoirement toute une partie
         while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
-            int direction = (int) (Math.random()*3);
+            int direction = random.nextInt(3);
             if (direction == 2) direction++;
             jouerCoup(board, direction);
             positionTapis();
@@ -113,8 +116,8 @@ public class Partie {
         return valid;
     }
 
-    public int jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
-        int nbCases = ((int)(Math.random()*6))+1; // Random roll
+    private int jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
+        int nbCases = random.nextInt(6)+1; // Random roll
         nbCases = (nbCases >4) ? nbCases - 3 : nbCases;
 
         int newOrientation = (board.getOrientation() + direction) % 4;
@@ -122,14 +125,16 @@ public class Partie {
         return nbCases-1;
     }
 
-    public void jouerCoupMCTS(){
+    private void jouerCoupMCTS(){
         IA ia = new IA(this, true);
         int wb = white.getArgent();
         int bb = black.getArgent();
+//        System.out.println("white :" + wb +"; black :" + bb);
         int direction = ia.moveChoice();
         int dir = direction;
         int wa = white.getArgent();
         int ba = black.getArgent();
+//        System.out.println("white :" + wa +"; black :" + ba);
         white.setArgent(wb-wa);
         black.setArgent(bb-ba);
         if (direction == 2) direction++;
@@ -148,14 +153,14 @@ public class Partie {
         //positionTapis();
     }
 
-    public boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int posTapis, int oriTapis) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
+    private boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int posTapis, int oriTapis) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
         return poseTapis(this.board, posTapis, oriTapis);
     }
 
-    public void coupDuJoueur(){
-        Scanner sc = new Scanner(System.in);
+    private void coupDuJoueur(){
+        Scanner sc = new Scanner(System.in, "UTF-8");
         System.out.println("Entrez la direction (0: devant, 1:droite, 3:gauche) :");
         String str = sc.nextLine();
 
@@ -163,7 +168,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        Boolean bool = false;
+        boolean bool = false;
 
         while(!bool){
             System.out.println("-1:haut/ 0:droite/ 1:bas/ 2:gauche ?");
@@ -179,16 +184,16 @@ public class Partie {
         }
     }
 
-    public void positionTapis(){
+    private void positionTapis(){
         boolean bool = false;
         while(!bool){
-            int directionTapis = ((int) (Math.random()*4))-1;
-            int directionTapis2 = ((int) (Math.random()*3))-1;
+            int directionTapis = random.nextInt(4)-1;
+            int directionTapis2 = random.nextInt(3)-1;
             bool = poseTapis(board, directionTapis, directionTapis2);
         }
     }
 
-    public Joueur calculWinner(){
+    private Joueur calculWinner(){
         if(white.getArgent() <= 0) {
             return black;
         }
@@ -200,12 +205,12 @@ public class Partie {
         return (white.getArgent() > black.getArgent()) ? white : black;
     }
 
-    public void changementJoueur(){
+    private void changementJoueur(){
         joueurActif = (joueurActif == white) ? black : white;
         System.out.println("C'est au tour de "+joueurActif.getPseudo());
     }
 
-    public boolean poseTapis(Board board, int pos1, int pos2) {
+    private boolean poseTapis(Board board, int pos1, int pos2) {
 
         int x1 = board.getAsam()[0] - ((pos1-1) % 2);
         int y1 = board.getAsam()[1] + (pos1 % 2);
@@ -229,24 +234,6 @@ public class Partie {
             }
         }
 
-        //System.out.println("("+x1+";"+y1+") ; ("+x2+";"+y2+")");
-
         return board.poseTapis(this.joueurActif, x1, y1, x2, y2);
     }
-
-    /* public List<Integer> getDirectionsPossibles() {
-        List<Integer> tmp = new ArrayList<>();
-        if(board.getAsam()[0] > 1 && board.getCase(board.getAsam()[0], board.getAsam()[1]) != null && (!board.getCase(board.getAsam()[0], board.getAsam()[1]).equals(board.getCase(board.getAsam()[0], board.getAsam()[1])) )) {
-            tmp.add(2);
-        }
-        if(board.getAsam()[0] < 5) {
-            tmp.add(0);
-        }
-        if(board.getAsam()[1] > 1) {
-            tmp.add(-1);
-        }
-        if(board.getAsam()[1] < 5) {
-            tmp.add(1);
-        }
-    } */
 }

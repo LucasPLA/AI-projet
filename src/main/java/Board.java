@@ -1,14 +1,11 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class Board {
 
     // Etat général du plateau de jeu :
     private Tapis[][] board;
     // Dimension du plateau
-    private int dimension;
+    private final int dimension;
     // Position de asam :
     private int xpos;
     private int ypos;
@@ -40,9 +37,7 @@ public class Board {
         this.dimension = b.dimension;
         this.board = new Tapis[dimension][dimension];
         for(int i=0; i<dimension; i++){
-            for(int j = 0; j < dimension; j++){
-                this.board[i][j] = b.board[i][j];
-            }
+            System.arraycopy(b.board[i], 0, this.board[i], 0, dimension);
         }
         this.xpos = b.xpos;
         this.ypos = b.ypos;
@@ -57,11 +52,6 @@ public class Board {
         return dimension;
     }
 
-    public Tapis[][] getBoard() {return board;}
-
-    // Pose Asam a la position voulue
-    public void setAsam(int x, int y) {xpos=x; ypos=y;}
-
     public Tapis getCase(int xpos, int ypos) {
         return this.board[xpos][ypos];
     }
@@ -71,27 +61,23 @@ public class Board {
     }
 
     public int[] getAsam() {
-        int[] res = {this.xpos, this.ypos};
-        return res;
+        return  new int[] {this.xpos, this.ypos};
     }
 
-    public boolean poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) { // todo verifier que l'on pas poser sous asam
+    public boolean poseTapis(Joueur joueur, int xpos1, int ypos1, int xpos2, int ypos2) {
         // verifie les deux moitiés sont bien adjacente et valides
         if(!(this.estValide(xpos1, ypos1) && this.estValide(xpos2, ypos2) && Board.isAdjacent(xpos1, ypos1, xpos2, ypos2))) {
             return false;
-            //throw new RuntimeException();
         }
 
         // verifier que le tapis est bien a coté d'asam
         if(!(Board.isAdjacent(this.xpos, this.ypos, xpos1, ypos1) || Board.isAdjacent(this.xpos, this.ypos, xpos2, ypos2))) {
             return false;
-            //throw new RuntimeException();
         }
 
         // vérifie que tu ne recouvre pas un tapis complet
         if((this.board[xpos1][ypos1] != null) && (this.board[xpos1][ypos1].getXcomplement() == xpos2) && (this.board[xpos1][ypos1].getYcomplement() == ypos2) && !this.board[xpos1][ypos1].isComplementRecouvert()) {
             return false;
-            //throw new RuntimeException();
         }
 
         // indique au voisin que l'on recouvre que son autre moitié va être recouverte
@@ -120,10 +106,6 @@ public class Board {
         int newXpos = this.xpos;
         int newYpos = this.ypos;
 
-        /*if(newOrientation == 2) {
-            throw new RuntimeException();
-        }*/
-
         if((newOrientation % 2) == 0) {
             newYpos -= (1-newOrientation) * longueur;
         } else {
@@ -148,7 +130,7 @@ public class Board {
         }
     }
 
-    public int nbTapisAdjacents() {
+    private int nbTapisAdjacents() {
         List<Tapis> tapisVisites = new ArrayList<Tapis>();
         Deque<Tapis> tapisAVisiter = new ArrayDeque<Tapis>();
         int compteur = 0;
@@ -207,7 +189,7 @@ public class Board {
     }
 
     // En partant du principe que dimension est impaire...
-    public int[] gererDebordement(int x, int y){
+    private int[] gererDebordement(int x, int y){
         // Depassement en abscisse
         if(x<0 || x>(this.dimension - 1)) {
 
@@ -243,17 +225,15 @@ public class Board {
 
 
         }
-        int[] res = {x, y};
-        return res;
+        return new int[] {x, y};
     }
 
     // retourne vrai si la case est bien dans les dimensions du tableau
-    public boolean estValide(int x, int y) {
+    private boolean estValide(int x, int y) {
         return ((x>=0 && x<=(dimension-1)) && (y>=0 && y<=(dimension-1)));
     }
 
-    //
-    public static boolean isAdjacent(int x1, int y1, int x2, int y2) {
+    private static boolean isAdjacent(int x1, int y1, int x2, int y2) {
         return (((Math.abs(x1-x2) == 1) && (Math.abs(y1-y2) == 0)) || ((Math.abs(x1-x2) == 0) && (Math.abs(y1-y2) == 1)));
     }
 
