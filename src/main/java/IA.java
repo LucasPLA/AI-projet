@@ -112,7 +112,7 @@ public class IA { // MCTS
         if(p.jouerPartieAleatoire().getPseudo() == "black"){
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     public void updateStats(double value) {

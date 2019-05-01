@@ -27,7 +27,7 @@ public class Partie {
 
     public Joueur jouerPartieJoueur() { // Player vs player
         Display.afficheBoard(board);
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
             coupDuJoueur();
 
             Display.afficheBoard(board);
@@ -42,7 +42,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Joueur
 
@@ -69,7 +69,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Random IA
 
@@ -106,52 +106,53 @@ public class Partie {
         return calculWinner();
     }
 
-    public boolean jouerUnCoupComplet(int direction, int nbCases, int posTapis, int oriTapis) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
+    public void jouerUnCoupComplet(int direction, int nbCases) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
         if (direction == 2) direction++;
-        boolean valid = jouerCoupDetermine(board, joueurActif, direction, nbCases, posTapis, oriTapis);
+        jouerCoupDetermine(board, joueurActif, direction, nbCases);
+        positionTapis();
         joueurActif = (joueurActif == white) ? black : white;
-        return valid;
     }
 
-    public int jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
+    public void jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
         int nbCases = ((int)(Math.random()*6))+1; // Random roll
         nbCases = (nbCases >4) ? nbCases - 3 : nbCases;
 
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, this.joueurActif);
-        return nbCases-1;
     }
 
     public void jouerCoupMCTS(){
-        IA ia = new IA(this, true);
+        IA iaOri = new IA(this, true, true);
         int wb = white.getArgent();
         int bb = black.getArgent();
-        int direction = ia.moveChoice();
-        int dir = direction;
+        int direction = iaOri.moveChoiceOri();
         int wa = white.getArgent();
         int ba = black.getArgent();
         white.setArgent(wb-wa);
         black.setArgent(bb-ba);
         if (direction == 2) direction++;
-        int nbCases = jouerCoup(board, direction);
-        int max = -1;
-        int wins;
-        int val = 0;
-        for(int i = 0; i<12; i++){
-            wins = ia.children[dir*48+nbCases*12+i].nWins;
-            if(wins > max){
-                max = wins;
-                val = i;
-            }
+        jouerCoup(board, direction);
+
+        Display.afficheBoard(board);
+        Display.afficheJoueurs(white, black);
+
+        IA iaPos = new IA(this, false, true);
+        wb = white.getArgent();
+        bb = black.getArgent();
+        int position = iaPos.moveChoicePose();
+        wa = white.getArgent();
+        ba = black.getArgent();
+        white.setArgent(wb-wa);
+        black.setArgent(bb-ba);
+        boolean test = poseTapis(board, ((position/3)-1), ((position%3)-1));
+        if(!test){
+            positionTapis();
         }
-        poseTapis(this.board, ((val/4)-1), ((val%3)-1));
-        //positionTapis();
     }
 
-    public boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int posTapis, int oriTapis) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
+    public void jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
-        return poseTapis(this.board, posTapis, oriTapis);
     }
 
     public void coupDuJoueur(){
