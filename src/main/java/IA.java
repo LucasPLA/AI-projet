@@ -26,25 +26,22 @@ public class IA { // MCTS
         double time;
         time = System.currentTimeMillis();
         int nbPartie = 0;
-        while((System.currentTimeMillis() - time) < 10000){ // L'algo du MCTS tourne pendant 10 seconde
+        while((System.currentTimeMillis() - time) < 1000){ // L'algo du MCTS tourne pendant 10 seconde
             this.selectAction();
         }
         int max = -1;
-        int sum = 0;
         int choice = 0;
-        for(int i = 0; i<3; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
-            sum = 0;
-            for(int j = 0; j<48; j++){
-                sum += this.children[(48*i)+j].nWins;
-            }
-            if(sum > max){
+        int val;
+        for(int i = 0; i<144; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
+            val = children[i].nWins;
+            if(val > max){
                 choice = i;
-                max = sum;
+                max = val;
             }
-            System.out.println("La direction "+i+" gagne "+ sum +" parties virtuelles");
+            System.out.println("La direction "+(i/48)+" gagne "+ val +" points");
         }
         System.out.println("L'IA a joué "+this.nVisits+" parties");
-        System.out.println("Elle choisit la direction "+choice+" qui semble la plus prometteuse");
+        System.out.println("Elle choisit la direction "+(choice/48)+" qui semble la plus prometteuse");
         return choice;
     }
 
