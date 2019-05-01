@@ -133,7 +133,9 @@ public class Partie {
         int direction = (choice/48);
         if (direction == 2) direction++;
         boolean v = jouerCoupDetermine(board, joueurActif, direction,((choice%48)/12)+1, (((choice%12)/3)-1), ((choice%3))-1);
-
+        if(!v){
+            positionTapis();
+        }
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
     }
