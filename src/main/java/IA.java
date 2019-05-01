@@ -26,26 +26,47 @@ public class IA { // MCTS
         System.out.println("L'IA choisi la meilleure orientation à partir du MCTS :");
         double time;
         time = System.currentTimeMillis();
-        while((System.currentTimeMillis() - time) < 10000){ // L'algo du MCTS tourne pendant 10 seconde
+        int nbPartie = 0;
+        while((System.currentTimeMillis() - time) < 1000){ // L'algo du MCTS tourne pendant 10 seconde
             this.selectAction();
         }
         int max = -1;
-        int sum;
         int choice = 0;
-        for(int i = 0; i<3; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
-            sum = 0;
-            for(int j = 0; j<48; j++){
-                sum += this.children[(48*i)+j].nWins;
-            }
-            if(sum > max){
+        int val;
+        int sum = 0;
+        for(int i = 0; i<144; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
+            val = children[i].nWins;
+            sum+=val;
+            if(val > max){
                 choice = i;
-                max = sum;
+                max = val;
             }
-            System.out.println("La direction "+i+" gagne "+ sum +" parties virtuelles");
+            if(i%48==47){
+                System.out.println("La direction "+(i/48)+" gagne "+ sum +" points");
+                sum = 0;
+            }
+
         }
         System.out.println("L'IA a joué "+this.nVisits+" parties");
-        System.out.println("Elle choisit la direction "+choice+" qui semble la plus prometteuse");
+        System.out.println("Elle choisit la direction "+(choice/48)+" qui semble la plus prometteuse");
         return choice;
+    }
+
+    public int poseChoice(int i, int j) {
+        System.out.println("L'IA récupère la meilleure position pour son tapis depuis le MCTS");
+        int offset = ((i*48)+(j*12));
+        int max = -1;
+        int choice = 0;
+        int val;
+        for(int k = offset; k<offset+12; k++){
+            val = children[k].nWins;
+            if(val > max){
+                choice = k;
+                max = val;
+            }
+            System.out.println("La position ("+(((k%12)/3)-1)+";"+((k%3)-1)+") remporte "+val+" points");
+        }
+        return choice%12;
     }
 
     private void selectAction() {
@@ -112,7 +133,7 @@ public class IA { // MCTS
         if(p.jouerPartieAleatoire().getPseudo().equals("black")){
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     private void updateStats(double value) {

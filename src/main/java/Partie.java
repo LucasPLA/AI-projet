@@ -30,7 +30,7 @@ public class Partie {
 
     public Joueur jouerPartieJoueur() { // Player vs player
         Display.afficheBoard(board);
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
             coupDuJoueur();
 
             Display.afficheBoard(board);
@@ -45,7 +45,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Joueur
 
@@ -72,7 +72,7 @@ public class Partie {
         Display.afficheBoard(board);
         Display.afficheJoueurs(white, black);
 
-        while((black.getNbTapisRestants()!=0 || white.getNbTapisRestants()!=0) && white.getArgent() > 0 && black.getArgent() > 0){
+        while((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
             // Random IA
 
@@ -109,11 +109,11 @@ public class Partie {
         return calculWinner();
     }
 
-    public boolean jouerUnCoupComplet(int direction, int nbCases, int posTapis, int oriTapis) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
+    public boolean jouerUnCoupComplet(int direction, int nbCases, int pos1, int pos2) { // Pour le MCTS (jouer un coup pour l'expansion des noeuds)
         if (direction == 2) direction++;
-        boolean valid = jouerCoupDetermine(board, joueurActif, direction, nbCases, posTapis, oriTapis);
+        boolean v = jouerCoupDetermine(board, joueurActif, direction, nbCases, pos1, pos2);
         joueurActif = (joueurActif == white) ? black : white;
-        return valid;
+        return v;
     }
 
     private int jouerCoup(Board board, int direction) { // Bouge le vendeur selon la direction indiquée d'un nombre de case aléatoire
@@ -129,34 +129,27 @@ public class Partie {
         IA ia = new IA(this, true);
         int wb = white.getArgent();
         int bb = black.getArgent();
-//        System.out.println("white :" + wb +"; black :" + bb);
-        int direction = ia.moveChoice();
-        int dir = direction;
+        int choice = ia.moveChoice();
         int wa = white.getArgent();
         int ba = black.getArgent();
-//        System.out.println("white :" + wa +"; black :" + ba);
         white.setArgent(wb-wa);
         black.setArgent(bb-ba);
+        int direction = (choice/48);
         if (direction == 2) direction++;
-        int nbCases = jouerCoup(board, direction);
-        int max = -1;
-        int wins;
-        int val = 0;
-        for(int i = 0; i<12; i++){
-            wins = ia.children[dir*48+nbCases*12+i].nWins;
-            if(wins > max){
-                max = wins;
-                val = i;
-            }
+        int nbC = jouerCoup(board, direction);
+        Display.afficheBoard(board);
+        Display.afficheJoueurs(white, black);
+        int pos = ia.poseChoice((choice/48), nbC);
+        boolean v = poseTapis(board, (pos/3)-1,(pos%3)-1);
+        if(!v){
+            positionTapis();
         }
-        poseTapis(this.board, ((val/4)-1), ((val%3)-1));
-        //positionTapis();
     }
 
-    private boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int posTapis, int oriTapis) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
+    private boolean jouerCoupDetermine(Board board, Joueur joueurActif, int direction, int nbCases, int pos1, int pos2) { // Bouge le vendeur selon la direction indiquée d'un nombre de case déterminé
         int newOrientation = (board.getOrientation() + direction) % 4;
         board.bougeVendeur(nbCases, newOrientation, joueurActif);
-        return poseTapis(this.board, posTapis, oriTapis);
+        return poseTapis(board, pos1, pos2);
     }
 
     private void coupDuJoueur(){
