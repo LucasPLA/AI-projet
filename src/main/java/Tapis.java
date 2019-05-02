@@ -1,8 +1,8 @@
 public class Tapis {
 
-    private Joueur possesseur;
-    private int x, y;
-    private int xcomplement, ycomplement;
+    private final Joueur possesseur;
+    private final int x, y;
+    private final int xcomplement, ycomplement;
     private boolean complementRecouvert;
 
     public Tapis(Joueur possesseur, int x, int y, int xcomplement, int ycomplement) {

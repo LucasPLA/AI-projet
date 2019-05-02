@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -26,12 +24,3 @@ public class Main {
         System.out.println("Le gagnant est "+winner.getPseudo());
     }
 }
-
-//TODO :
-/*
-- stream java
-- IA
-
-1er milestone :
-    - avoir une version en random qui marche
- */

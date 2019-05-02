@@ -4,14 +4,14 @@ import java.util.List;
 public class IA { // MCTS
 
     //static Random r = new Random(); // Pour éviter les cas d'égalité
-    static int nActions = 144; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
+    private static final int nActions = 144; // Nombre d'action maximum possible (seul la direction est prise en compte pour l'instant)
     //static double epsilon = 1e-6; // Pour éviter les divisions par 0
 
     IA[] children; // Noeuds enfants
-    int nVisits; // Nb de visite du noeud
+    private int nVisits; // Nb de visite du noeud
     int nWins; // Nb de partie gagnée dans le noeud
-    Partie game; // Etat de la partie dans le neoud
-    boolean valid; // Noeud invalide si position invalide
+    private final Partie game; // Etat de la partie dans le neoud
+    private final boolean valid; // Noeud invalide si position invalide
 
     public IA(Partie game, boolean v){
         children = null;
@@ -19,6 +19,7 @@ public class IA { // MCTS
         nWins = 0;
         valid = v;
         this.game = new Partie(game);
+        // System.out.println(this.game + ";" + game); //TODO
     }
 
     public int moveChoice(){ // Choix du movement de l'IA à partir du MCTS
@@ -68,7 +69,7 @@ public class IA { // MCTS
         return choice%12;
     }
 
-    public void selectAction() {
+    private void selectAction() {
         List<IA> visited = new LinkedList<IA>(); // Liste des noeuds visité dans le parcours courant
         IA cur = this; // Noeud courant
         visited.add(this);
@@ -90,7 +91,7 @@ public class IA { // MCTS
         }
     }
 
-    public void expand() { // Expansion du noeud
+    private void expand() { // Expansion du noeud
         Partie p;
         boolean v;
         children = new IA[nActions];
@@ -108,7 +109,7 @@ public class IA { // MCTS
         for (IA c : children) {
             if(c.valid){
                 if(c.nVisits!=0){
-                    uctValue = (c.nWins / c.nVisits) +
+                    uctValue = ((double) c.nWins / c.nVisits) +
                             (Math.sqrt(2) * (Math.sqrt(Math.log(nVisits+1) / c.nVisits)));
                 } else {
                     uctValue = Double.MAX_VALUE;
@@ -123,28 +124,20 @@ public class IA { // MCTS
         return selected;
     }
 
-    public boolean isLeaf() {
+    private boolean isLeaf() {
         return children == null;
     }
 
-    public int rollOut(IA a) { // Dérouler une partie aléatoire
+    private int rollOut(IA a) { // Dérouler une partie aléatoire
         Partie p = new Partie(a.game);
-        if(p.jouerPartieAleatoire().getPseudo() == "black"){
+        if(p.jouerPartieAleatoire().getPseudo().equals("black")){
             return 1;
         }
         return -1;
     }
 
-    public void updateStats(double value) {
+    private void updateStats(double value) {
         nVisits++;
         nWins += value;
     }
-
-    public int arity() {
-        return children == null ? 0 : children.length;
-    }
-
-    /*public Joueur partieAleatoire() {
-        Partie partie = new Partie(new Joueur("white", "o"), new Joueur("black", "x"), new Board(7));    }*/
-
 }
