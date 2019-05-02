@@ -58,12 +58,15 @@ public class Partie {
 
             // IA
 
-            jouerCoupMCTS();
+            if((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
-            Display.afficheBoard(board);
-            Display.afficheJoueurs(white, black);
+                jouerCoupMCTS();
 
-            changementJoueur();
+                Display.afficheBoard(board);
+                Display.afficheJoueurs(white, black);
+
+                changementJoueur();
+            }
         }
         return calculWinner();
     }
@@ -88,12 +91,15 @@ public class Partie {
 
             // MCTS IA
 
-            jouerCoupMCTS();
+            if((black.getNbTapisRestants()>0 || white.getNbTapisRestants()>0) && white.getArgent() > 0 && black.getArgent() > 0){
 
-            Display.afficheBoard(board);
-            Display.afficheJoueurs(white, black);
+                jouerCoupMCTS();
 
-            changementJoueur();
+                Display.afficheBoard(board);
+                Display.afficheJoueurs(white, black);
+
+                changementJoueur();
+            }
         }
         return calculWinner();
     }

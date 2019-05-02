@@ -44,6 +44,10 @@ public class Board {
         this.orientation = b.orientation;
     }
 
+    public Tapis[][] getBoard(){
+        return board;
+    }
+
     public int getOrientation(){
         return orientation;
     }
@@ -130,7 +134,7 @@ public class Board {
         }
     }
 
-    private int nbTapisAdjacents() {
+    public int nbTapisAdjacents() {
         List<Tapis> tapisVisites = new ArrayList<Tapis>();
         Deque<Tapis> tapisAVisiter = new ArrayDeque<Tapis>();
         int compteur = 0;
@@ -189,7 +193,7 @@ public class Board {
     }
 
     // En partant du principe que dimension est impaire...
-    private int[] gererDebordement(int x, int y){
+    public int[] gererDebordement(int x, int y){
         // Depassement en abscisse
         if(x<0 || x>(this.dimension - 1)) {
 
