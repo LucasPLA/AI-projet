@@ -30,41 +30,45 @@ public class IA { // MCTS
         while((System.currentTimeMillis() - time) < 1000){ // L'algo du MCTS tourne pendant 10 seconde
             this.selectAction();
         }
-        int max = -1;
+        int max = Integer.MIN_VALUE;
         int choice = 0;
         int val;
         int sum = 0;
         for(int i = 0; i<144; i++){ // Compte le nombre de victoire pour chaque action et choisi la plus victorieuse
             val = children[i].nWins;
             sum+=val;
-            if(val > max){
-                choice = i;
-                max = val;
-            }
             if(i%48==47){
-                System.out.println("La direction "+(i/48)+" gagne "+ sum +" points");
+                System.out.println("La direction "+(i/48)+" remporte "+ sum +" point(s)");
+                if(sum > max){
+                    choice = (i/48);
+                    max = sum;
+                }
                 sum = 0;
             }
 
         }
         System.out.println("L'IA a joué "+this.nVisits+" parties");
-        System.out.println("Elle choisit la direction "+(choice/48)+" qui semble la plus prometteuse");
+        System.out.println("Elle choisit la direction "+(choice)+" qui semble la plus prometteuse");
         return choice;
     }
 
     public int poseChoice(int i, int j) {
         System.out.println("L'IA récupère la meilleure position pour son tapis depuis le MCTS");
         int offset = ((i*48)+(j*12));
-        int max = -1;
+        int max = Integer.MIN_VALUE;;
         int choice = 0;
         int val;
         for(int k = offset; k<offset+12; k++){
-            val = children[k].nWins;
-            if(val > max){
-                choice = k;
-                max = val;
+            if(children[k].valid){
+                val = children[k].nWins;
+                if(val > max){
+                    choice = k;
+                    max = val;
+                }
+                System.out.println("La position ("+(((k%12)/3)-1)+";"+((k%3)-1)+") remporte "+val+" point(s)");
+            } else {
+                System.out.println("La position ("+(((k%12)/3)-1)+";"+((k%3)-1)+") n'est pas valide");
             }
-            System.out.println("La position ("+(((k%12)/3)-1)+";"+((k%3)-1)+") remporte "+val+" points");
         }
         return choice%12;
     }
@@ -73,21 +77,25 @@ public class IA { // MCTS
         List<IA> visited = new LinkedList<IA>(); // Liste des noeuds visité dans le parcours courant
         IA cur = this; // Noeud courant
         visited.add(this);
-        while (!cur.isLeaf()) { // On descend jusqu'à atteindre une feuille
-            cur = cur.select(); // Sélection du noeud enfant
-            visited.add(cur);
-        }
-        IA newNode;
-        if(cur.nVisits != 0){
-            cur.expand(); // Expansion si la feuille a déjà été visitée
-            newNode = cur.select();
-            visited.add(newNode);
-        } else {
-            newNode = cur;
-        }
-        int value = rollOut(newNode); // Partie aléatoire joué depuis le noeud choisi
-        for (IA node : visited) { // Maj des noeuds visité
-            node.updateStats(value);
+        try {
+            while (!cur.isLeaf()) { // On descend jusqu'à atteindre une feuille
+                cur = cur.select(); // Sélection du noeud enfant
+                visited.add(cur);
+            }
+            IA newNode;
+            if(cur.nVisits != 0){
+                cur.expand(); // Expansion si la feuille a déjà été visitée
+                newNode = cur.select();
+                visited.add(newNode);
+            } else {
+                newNode = cur;
+            }
+            int value = rollOut(newNode); // Partie aléatoire joué depuis le noeud choisi
+            for (IA node : visited) { // Maj des noeuds visité
+                node.updateStats(value);
+            }
+        } catch (NullPointerException e) {
+
         }
     }
 
