@@ -37,7 +37,7 @@ Nous avons fait le choix de partir sur la deuxième solution car plus efficace e
 
 Malgré cette nouvelle implémentation, les résultats de l'IA restait très moyens.
 L'une des causes était que nous ne sanctionnions pas les défaites (nous retournions 0 au lieu de -1 si la partie simulée conduisait à une défaite).
-Cela posait problème dans les cas où l'arbre des possibilités d'action était déséquilibré (par exemple lorsque le vendeur est proche d'un mur. Après certains déplacements, il est possible de poser plus de tapis qu'après d'autres et donc certains déplacements conduisent à plus de possibilités (et donc à plus de parties gagnées).
+Cela posait problème dans les cas où l'arbre des possibilités d'action était déséquilibré (par exemple lorsque le vendeur est proche d'un mur). Après certains déplacements, il est possible de poser plus de tapis qu'après d'autres et donc certains déplacements conduisent à plus de possibilités (et donc à plus de parties gagnées).
 Sans sanction, les déplacements avec le plus de possibilités étaient privilégiés.
 Rendre -1 au lieu de 0 en cas de défaite a corrigé ce défaut et a nettement amélioré les performances de notre IA.
 
