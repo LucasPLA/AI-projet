@@ -41,6 +41,8 @@ Cela posait problème dans les cas où l'arbre des possibilités d'action était
 Sans sanction, les déplacements avec le plus de possibilités étaient privilégiés.
 Rendre -1 au lieu de 0 en cas de défaite a corrigé ce défaut et a nettement amélioré les performances de notre IA.
 
+Une vidéo explicative du projet et de notre IA peut-êter visionnée ici : https://drive.google.com/open?id=1BIM8M1Y3y3Q3yT7-NSgwPsDhGD_46hJf
+
 ## Qualification de l'IA
 
 Notre IA est globalement meilleur qu'un algorithme qui joue toutes les actions au hasard. Elle présente donc au moins une certaine intelligence. Mais étant donnée qu'il y a aussi une part de hasard et de chance dans le jeu, l'IA peut perdre contre des coups aléatoires.
